@@ -4,6 +4,7 @@ import os.lab1.compfuncs.basic.IntOps;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 import static Lab_1.CommunicationCommand.*;
 
@@ -19,35 +20,39 @@ public class ClientF extends AbstractClient {
         clientF.startClient();
     }
 
-    public void startClient() {
-        try {
-            int attempts = 0;
-            while (attempts < MAX_ATTEMPTS) {
-                int number = random.nextInt(10) + 1;
+    public void startClient() throws RuntimeException {
+        int attempts = 0;
+        while (attempts < MAX_ATTEMPTS) {
+            int number = random.nextInt(10) + 1;
+            int random = AbstractClient.random.nextInt(10) + 1;
 
-                Optional<Integer> optional = IntOps.trialF(Integer.parseInt(parameter));
-
-                if (optional.isPresent()) {
-                    out.println(RESULT_F.getMsg() + optional.get());
-                    break;
-                } else {
-                    out.println(SOFT_ERROR.getMsg());
-                    attempts++;
-                }
+            if (random <= 5) {
+                ExecutorService es = Executors.newSingleThreadExecutor();
+                Future<Optional<Integer>> future = es.submit(() -> IntOps.trialF(Integer.parseInt(parameter)));
 
                 try {
-                    Thread.sleep(500L * number);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    Optional<Integer> optional = future.get(5, TimeUnit.SECONDS);
+
+                    optional.ifPresent(result -> out.println(RESULT_F.getMsg() + result));
+
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    out.println(HARD_ERROR.getMsg() + "Function F is not defined on argument " + parameter);
+                    this.closeConnection();
                 }
+
+            } else {
+                out.println(SOFT_ERROR.getMsg());
+                attempts++;
             }
 
-            out.println(HARD_ERROR.getMsg() + "Function F failed " +
-                    MAX_ATTEMPTS + " times to compute a result");
-
-        } catch (Throwable e) {
-            out.println(HARD_ERROR.getMsg() + e.getMessage());
-            this.closeConnection();
+            try {
+                Thread.sleep(650L * number);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        out.println(HARD_ERROR.getMsg() + "Function F failed " +
+                MAX_ATTEMPTS + " times to compute a result");
     }
 }

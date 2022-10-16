@@ -1,13 +1,10 @@
 package Lab_1.client;
 
-import os.lab1.compfuncs.advanced.DoubleOps;
 import os.lab1.compfuncs.basic.IntOps;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 import static Lab_1.CommunicationCommand.*;
 
@@ -25,34 +22,38 @@ public class ClientG extends AbstractClient {
     }
 
     public void startClient() {
-        try {
-            int attempts = 0;
-            while (attempts < MAX_ATTEMPTS) {
-                int number = random.nextInt(10) + 1;
+        int attempts = 0;
+        while (attempts < MAX_ATTEMPTS) {
+            int number = random.nextInt(10) + 1;
+            int random = AbstractClient.random.nextInt(10) + 1;
 
-                Optional<Integer> optional = IntOps.trialG(Integer.parseInt(parameter));
-
-                if (optional.isPresent()) {
-                    out.println(RESULT_G.getMsg() + optional.get());
-                    break;
-                } else {
-                    out.println(SOFT_ERROR.getMsg());
-                    attempts++;
-                }
+            if (random <= 5) {
+                ExecutorService es = Executors.newSingleThreadExecutor();
+                Future<Optional<Integer>> future = es.submit(() -> IntOps.trialG(Integer.parseInt(parameter)));
 
                 try {
-                    Thread.sleep(500L * number);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    Optional<Integer> optional = future.get(5, TimeUnit.SECONDS);
+
+                    optional.ifPresent(result -> out.println(RESULT_G.getMsg() + result));
+
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    out.println(HARD_ERROR.getMsg() + "Function G is not defined on argument " + parameter);
+                    this.closeConnection();
                 }
+
+            } else {
+                out.println(SOFT_ERROR.getMsg());
+                attempts++;
             }
 
-            out.println(HARD_ERROR.getMsg() + "Function G failed " +
-                    MAX_ATTEMPTS + " times to compute a result");
-
-        } catch (Throwable e) {
-            out.println(HARD_ERROR.getMsg() + e.getMessage());
-            this.closeConnection();
+            try {
+                Thread.sleep(650L * number);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        out.println(HARD_ERROR.getMsg() + "Function G failed " +
+                MAX_ATTEMPTS + " times to compute a result");
     }
 }
