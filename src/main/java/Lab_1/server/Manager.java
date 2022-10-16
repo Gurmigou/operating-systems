@@ -4,38 +4,56 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Manager {
     private ServerSocket serverSocket;
     private static final String PROCESS_DIR = "C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\target\\classes";
+    private final List<ClientHandler> serverThreads = new ArrayList<>();
+    private static final List<Process> processList = new ArrayList<>();
+    protected static final List<Integer> resultList = new ArrayList<>();
 
-    public void initComputation(String parameter) throws IOException {
+    public void initComputation(String parameter) throws IOException, InterruptedException {
         initServer();
         startComputationProcess("F", parameter);
-//        startComputationProcess("G", parameter);
+        startComputationProcess("G", parameter);
+
+        for (ClientHandler ch : serverThreads) {
+            ch.join();
+        }
     }
 
     public static void stopComputation() {
-        System.out.println("Computation stopped. Closing server...");
+        System.out.println("Server closed.");
+
+        for (Process process : processList) {
+            process.destroy();
+        }
+
+        System.exit(0);
     }
 
-    public static void handleHardError(String message) {
-        System.out.println("Happened hard error. Reason: " + ((message != null && !message.isEmpty()) ? message : "unknown"));
+    public static void handleHardError(String info) {
+        System.out.println("Happened Hard Error: " + ((info != null && !info.isEmpty()) ? info : "unknown"));
+        stopComputation();
     }
 
-    public static void handleSoftError(String clientName) {
-        System.out.println("Happened soft error on client " + clientName + ". Computation wasn't finished.");
+    public static void handleResult(int op1, int op2) {
+        System.out.println("Final result: " + op1 + " + " + op2 + " = " + (op1 + op2));
     }
 
     private void initServer() throws IOException {
-        final int PORT = 8080;
+        final int PORT = 4005;
         final int MAX_CONNECTIONS = 2;
         this.serverSocket = new ServerSocket(PORT, MAX_CONNECTIONS);
+        System.out.println("Server started");
     }
 
     private void startComputationProcess(String clientName, String parameter) throws IOException {
         ProcessBuilder builtProcess = createProcess(clientName);
-        builtProcess.start();
+        Process startedProcess = builtProcess.start();
+        processList.add(startedProcess);
 
         createProcessToServerConnection(clientName, parameter);
     }
@@ -43,13 +61,13 @@ public class Manager {
     private ProcessBuilder createProcess(String clientName) {
         ProcessBuilder pb = new ProcessBuilder();
         pb.directory(new File(PROCESS_DIR));
-        pb.command("java", "Lab_1.client.Client" + clientName);
+        pb.command("java", "-cp", ";C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\src\\main\\resources\\lab1.jar", "Lab_1.client.Client" + clientName);
         return pb;
     }
 
     private void createProcessToServerConnection(String clientName, String parameter) throws IOException {
         Socket connection = this.serverSocket.accept();
         ClientHandler clientHandler = new ClientHandler(connection, parameter, clientName);
-//        clientHandler.start();
+        this.serverThreads.add(clientHandler);
     }
 }
