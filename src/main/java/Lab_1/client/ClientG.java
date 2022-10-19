@@ -1,12 +1,11 @@
 package Lab_1.client;
 
-import os.lab1.compfuncs.basic.IntOps;
+import Lab_1.function.AdvancedIntOps;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.*;
 
-import static Lab_1.CommunicationCommand.*;
+import static Lab_1.util.CommunicationCommand.*;
 
 public class ClientG extends AbstractClient {
     public ClientG() throws IOException {
@@ -23,37 +22,64 @@ public class ClientG extends AbstractClient {
 
     public void startClient() {
         int attempts = 0;
+        justSleep(2000L);
+
         while (attempts < MAX_ATTEMPTS) {
-            int number = random.nextInt(10) + 1;
-            int random = AbstractClient.random.nextInt(10) + 1;
+            Optional<Optional<Integer>> optionalResult = AdvancedIntOps.trialG(Integer.parseInt(parameter));
 
-            if (random <= 5) {
-                ExecutorService es = Executors.newSingleThreadExecutor();
-                Future<Optional<Integer>> future = es.submit(() -> IntOps.trialG(Integer.parseInt(parameter)));
-
-                try {
-                    Optional<Integer> optional = future.get(5, TimeUnit.SECONDS);
-
-                    optional.ifPresent(result -> out.println(RESULT_G.getMsg() + result));
-
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    out.println(HARD_ERROR.getMsg() + "Function G is not defined on argument " + parameter);
-                    this.closeConnection();
-                }
-
-            } else {
+            if (optionalResult.isEmpty()) {
                 out.println(SOFT_ERROR.getMsg());
                 attempts++;
+            } else {
+                Optional<Integer> result = optionalResult.get();
+                if (result.isEmpty())
+                    out.println(HARD_ERROR.getMsg() + "Function G is not defined on argument " + parameter);
+                else
+                    out.println(RESULT_G.getMsg() + result.get());
+                break;
             }
 
-            try {
-                Thread.sleep(650L * number);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            int randomNum = random.nextInt(5) + 1;
+            justSleep(650L * randomNum);
         }
 
         out.println(HARD_ERROR.getMsg() + "Function G failed " +
                 MAX_ATTEMPTS + " times to compute a result");
     }
+
+
+//        int attempts = 0;
+//        while (attempts < MAX_ATTEMPTS) {
+//            int number = random.nextInt(10) + 1;
+//            int random = AbstractClient.random.nextInt(10) + 1;
+//
+//            if (random <= 5) {
+//                ExecutorService es = Executors.newSingleThreadExecutor();
+//                Future<Optional<Integer>> future = es.submit(() -> IntOps.trialG(Integer.parseInt(parameter)));
+//
+//                try {
+//                    Optional<Integer> optional = future.get(5, TimeUnit.SECONDS);
+//
+//                    optional.ifPresent(result -> out.println(RESULT_G.getMsg() + result));
+//
+//                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+//                    out.println(HARD_ERROR.getMsg() + "Function G is not defined on argument " + parameter);
+//                    this.closeConnection();
+//                }
+//
+//            } else {
+//                out.println(SOFT_ERROR.getMsg());
+//                attempts++;
+//            }
+//
+//            try {
+//                Thread.sleep(650L * number);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//
+//        out.println(HARD_ERROR.getMsg() + "Function G failed " +
+//                MAX_ATTEMPTS + " times to compute a result");
+//    }
 }

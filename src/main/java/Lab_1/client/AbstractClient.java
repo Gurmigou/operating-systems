@@ -31,4 +31,12 @@ public abstract class AbstractClient {
             e.printStackTrace();
         }
     }
+
+    protected void justSleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

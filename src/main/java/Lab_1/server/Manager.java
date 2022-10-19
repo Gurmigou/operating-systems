@@ -1,5 +1,7 @@
 package Lab_1.server;
 
+import Lab_1.handler.CancelHandler;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -26,6 +28,7 @@ public class Manager {
 
     public static void stopComputation() {
         System.out.println("Server closed.");
+        CancelHandler.unregisterHook();
 
         for (Process process : processList) {
             process.destroy();

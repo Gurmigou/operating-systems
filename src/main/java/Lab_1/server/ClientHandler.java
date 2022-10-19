@@ -1,6 +1,5 @@
 package Lab_1.server;
 
-import os.lab1.compfuncs.advanced.DoubleOps;
 import os.lab1.compfuncs.advanced.IntOps;
 
 import java.io.BufferedReader;
@@ -10,7 +9,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Optional;
 
-import static Lab_1.CommunicationCommand.*;
+import static Lab_1.util.CommunicationCommand.*;
 
 public class ClientHandler extends Thread {
     private final Socket clientSocket;

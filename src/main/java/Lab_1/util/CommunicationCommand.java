@@ -1,4 +1,4 @@
-package Lab_1;
+package Lab_1.util;
 
 public enum CommunicationCommand {
     SOFT_ERROR("SOFT_ERROR"),
