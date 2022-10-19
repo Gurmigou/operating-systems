@@ -1,7 +1,5 @@
 package Lab_1.server;
 
-import Lab_1.handler.CancelHandler;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -28,7 +26,6 @@ public class Manager {
 
     public static void stopComputation() {
         System.out.println("Server closed.");
-        CancelHandler.unregisterHook();
 
         for (Process process : processList) {
             process.destroy();
@@ -44,6 +41,7 @@ public class Manager {
 
     public static void handleResult(int op1, int op2) {
         System.out.println("Final result: " + op1 + " + " + op2 + " = " + (op1 + op2));
+        stopComputation();
     }
 
     private void initServer() throws IOException {

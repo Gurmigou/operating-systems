@@ -23,9 +23,9 @@
             <systemPath>${project.basedir}/src/main/resources/lab1.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.1stleg</groupId>
-            <artifactId>jnativehook</artifactId>
-            <version>2.0.2</version>
+            <groupId>lc.kra.system</groupId>
+            <artifactId>system-hook</artifactId>
+            <version>3.8</version>
         </dependency>
     </dependencies>
 

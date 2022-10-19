@@ -29,7 +29,7 @@ public class AdvancedIntOps {
     }
 
     private static boolean isUndefinedFuncF(int param) {
-        return param == 1 || param == 3 || param == 9 || param > 100;
+        return param < 0 || param == 1 || param == 3 || param == 9 || param > 100;
     }
 
     private static int funcF(int param) {
@@ -53,7 +53,7 @@ public class AdvancedIntOps {
     }
 
     private static boolean isUndefinedFuncG(int param) {
-        return param == 2 || param == 3 || param == 15 || param == 20;
+        return param < 0 || param == 2 || param == 3 || param == 15 || param == 20;
     }
 
     private static int funcG(int param) {
