@@ -32,7 +32,7 @@ public class ClientG extends AbstractClient {
                 } else {
                     Optional<Double> result = optionalResult.get();
                     if (result.isEmpty())
-                        out.println(HARD_ERROR.getMsg() + "Function G is not defined on argument " + parameter);
+                        out.println(HARD_ERROR.getMsg() + "Can't compute Function G");
                     else
                         out.println(RESULT_F.getMsg() + result.get());
                     break;
