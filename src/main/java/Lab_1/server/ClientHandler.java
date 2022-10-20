@@ -46,7 +46,7 @@ public class ClientHandler extends Thread {
                 iterate = handleClientResponse(response);
             }
 
-            int result = Integer.parseInt(response.substring(RESULT_F.getMsg().length()));
+            double result = Double.parseDouble(response.substring(RESULT_F.getMsg().length()));
             System.out.println("Result " + clientName + ": " + result);
             System.out.println("Computation on client: " + clientName + " is finished. Socket closed");
 
@@ -74,7 +74,8 @@ public class ClientHandler extends Thread {
             return false;
         }
         if (response.startsWith(SOFT_ERROR.getMsg())) {
-            System.out.println("Soft Error happened on client: " + clientName + ". Trying to recompute");
+            String attempt = response.substring(SOFT_ERROR.getMsg().length());
+            System.out.println("Soft Error happened on client: " + clientName + ". Trying to recompute: " + attempt);
             return true;
         }
         if (response.startsWith(HARD_ERROR.getMsg())) {

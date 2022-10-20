@@ -12,6 +12,7 @@ public class Main {
     public static void main(String[] args) {
         addCancelListener();
 
+        System.out.println("Press Q to cancel computation");
         System.out.println("Please Enter x parameter: ");
 
         Scanner scanner = new Scanner(System.in);

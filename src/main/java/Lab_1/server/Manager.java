@@ -10,9 +10,10 @@ import java.util.List;
 public class Manager {
     private ServerSocket serverSocket;
     private static final String PROCESS_DIR = "C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\target\\classes";
+    private static final String JAR_DIR = "C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\src\\main\\resources\\lab1.jar";
     private final List<ClientHandler> serverThreads = new ArrayList<>();
     private static final List<Process> processList = new ArrayList<>();
-    protected static final List<Integer> resultList = new ArrayList<>();
+    protected static final List<Double> resultList = new ArrayList<>();
 
     public void initComputation(String parameter) throws IOException, InterruptedException {
         initServer();
@@ -39,8 +40,8 @@ public class Manager {
         stopComputation();
     }
 
-    public static void handleResult(int op1, int op2) {
-        System.out.println("Final result: " + op1 + " + " + op2 + " = " + (op1 + op2));
+    public static void handleResult(double op1, double op2) {
+        System.out.println("Final result: " + op1 + " * " + op2 + " = " + (op1 * op2));
         stopComputation();
     }
 
@@ -62,7 +63,7 @@ public class Manager {
     private ProcessBuilder createProcess(String clientName) {
         ProcessBuilder pb = new ProcessBuilder();
         pb.directory(new File(PROCESS_DIR));
-        pb.command("java", "-cp", ";C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\src\\main\\resources\\lab1.jar", "Lab_1.client.Client" + clientName);
+        pb.command("java", "-cp", ";" + JAR_DIR, "Lab_1.client.Client" + clientName);
         return pb;
     }
 

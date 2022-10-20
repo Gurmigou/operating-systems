@@ -23,15 +23,6 @@ public abstract class AbstractClient {
         this.in = new BufferedReader(new InputStreamReader(serverConnection.getInputStream()));
     }
 
-    protected void closeConnection() {
-        try {
-            out.close();
-            serverConnection.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     protected void justSleep(long time) {
         try {
             Thread.sleep(time);
