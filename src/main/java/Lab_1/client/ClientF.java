@@ -25,12 +25,12 @@ public class ClientF extends AbstractClient {
             while (attempts < MAX_ATTEMPTS) {
                 Optional<Optional<Double>> optionalResult = AdvancedDoubleOps.trialF(Integer.parseInt(parameter));
 
-                if (optionalResult.isEmpty()) {
+                if (!optionalResult.isPresent()) {
                     out.println(SOFT_ERROR.getMsg() + (attempts + 1));
                     attempts++;
                 } else {
                     Optional<Double> result = optionalResult.get();
-                    if (result.isEmpty())
+                    if (!result.isPresent())
                         out.println(HARD_ERROR.getMsg() + "Can't compute Function F");
                     else
                         out.println(RESULT_F.getMsg() + result.get());

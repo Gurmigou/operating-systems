@@ -19,9 +19,9 @@ public class Scheduling {
     private static int standardDev = 100;
     private static int runtime = 1000;
     private static int quantum = 80;
-    private static Vector<sProcess> processVector = new Vector<>();
+    private static final Vector<sProcess> processVector = new Vector<>();
     private static Results result = new Results("null", "null", 0);
-    private static String resultsFile = "C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\src\\main\\java\\Lab_2\\Summary-Results";
+    private static String resultsFile = "src\\main\\java\\Lab_2\\Summary-Results";
     private static final Random random = new Random();
 
     private static void Init(String file) {
@@ -58,12 +58,6 @@ public class Scheduling {
                     StringTokenizer st = new StringTokenizer(line);
                     st.nextToken();
                     ioblocking = Common.s2i(st.nextToken());
-//                    X = Common.R1();
-//                    while (X == -1.0) {
-//                        X = Common.R1();
-//                    }
-//                    X = X * standardDev;
-//                    cputime = (int) X + meanDev;
 
                     do {
                         cputime = random.nextInt(standardDev) + meanDev * ((int) (Math.random() * 2));
@@ -104,8 +98,8 @@ public class Scheduling {
     public static void main(String[] args) {
         int i = 0;
 
-        // TODO: 13.11.2022
-        args = new String[]{"C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\src\\main\\java\\Lab_2\\scheduling.conf"};
+        // Path of scheduling configuration file
+        args = new String[]{"src\\main\\java\\Lab_2\\scheduling.conf"};
 
         if (args.length != 1) {
             System.out.println("Usage: 'java Scheduling <INIT FILE>'");
@@ -121,7 +115,6 @@ public class Scheduling {
             System.exit(-1);
         }
         System.out.println("Working...");
-        // TODO: 13.11.2022
         Init(args[0]);
         if (processVector.size() < processnum) {
             i = 0;

@@ -16,7 +16,7 @@ public class SchedulingAlgorithm {
         // a number of completed processes
         int completed = 0;
 
-        String resultsFile = "C:\\Users\\Yehor\\IdeaProjects\\operating-systems\\src\\main\\java\\Lab_2\\Summary-Processes";
+        String resultsFile = "src\\main\\java\\Lab_2\\Summary-Processes";
         result.schedulingType = "Interactive (Preemptive)";
         result.schedulingName = "Round robin";
 
